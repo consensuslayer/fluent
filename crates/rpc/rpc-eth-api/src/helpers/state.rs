@@ -7,13 +7,11 @@ use alloy_eips::BlockId;
 use alloy_primitives::{Address, Bytes, B256, U256};
 use alloy_rpc_types_eth::{Account, AccountInfo, EIP1186AccountProofResponse};
 use alloy_serde::JsonStorageKey;
+use fluentbase_types::PRECOMPILE_EVM_RUNTIME;
 use futures::Future;
-use reth_chainspec::{ChainSpecProvider, EthChainSpec, EthereumHardforks};
 use reth_errors::RethError;
 use reth_evm::{ConfigureEvm, EvmEnvFor};
-use reth_rpc_eth_types::{
-    revm_utils::PRECOMPILE_EVM_RUNTIME, EthApiError, PendingBlockEnv, RpcInvalidTransactionError,
-};
+use reth_rpc_eth_types::{EthApiError, PendingBlockEnv, RpcInvalidTransactionError};
 use reth_storage_api::{
     BlockIdReader, BlockNumReader, StateProvider, StateProviderBox, StateProviderFactory,
 };
@@ -117,7 +115,7 @@ pub trait EthState: LoadState + SpawnBlocking {
                 .ok_or(EthApiError::HeaderNotFound(block_id))?;
             let max_window = self.max_proof_window();
             if chain_info.best_number.saturating_sub(block_number) > max_window {
-                return Err(EthApiError::ExceedsMaxProofWindow.into())
+                return Err(EthApiError::ExceedsMaxProofWindow.into());
             }
 
             self.spawn_blocking_io(move |this| {
@@ -152,7 +150,7 @@ pub trait EthState: LoadState + SpawnBlocking {
                 .ok_or(EthApiError::HeaderNotFound(block_id))?;
             let max_window = this.max_proof_window();
             if chain_info.best_number.saturating_sub(block_number) > max_window {
-                return Err(EthApiError::ExceedsMaxProofWindow.into())
+                return Err(EthApiError::ExceedsMaxProofWindow.into());
             }
 
             let balance = account.balance;
@@ -202,14 +200,7 @@ pub trait EthState: LoadState + SpawnBlocking {
 /// Loads state from database.
 ///
 /// Behaviour shared by several `eth_` RPC methods, not exclusive to `eth_` state RPC methods.
-pub trait LoadState:
-    EthApiTypes
-    + RpcNodeCoreExt<
-        Provider: StateProviderFactory
-                      + ChainSpecProvider<ChainSpec: EthChainSpec + EthereumHardforks>,
-        Pool: TransactionPool,
-    >
-{
+pub trait LoadState: EthApiTypes + RpcNodeCoreExt {
     /// Returns the state at the given block number
     fn state_at_hash(&self, block_hash: B256) -> Result<StateProviderBox, Self::Error> {
         self.provider().history_by_block_hash(block_hash).map_err(Self::Error::from_eth_err)
@@ -287,17 +278,15 @@ pub trait LoadState:
     {
         self.spawn_blocking_io(move |this| {
             // first fetch the on chain nonce of the account
-            let on_chain_account_nonce = this
+            let mut next_nonce = this
                 .latest_state()?
                 .account_nonce(&address)
                 .map_err(Self::Error::from_eth_err)?
                 .unwrap_or_default();
 
-            let mut next_nonce = on_chain_account_nonce;
             // Retrieve the highest consecutive transaction for the sender from the transaction pool
-            if let Some(highest_tx) = this
-                .pool()
-                .get_highest_consecutive_transaction_by_sender(address, on_chain_account_nonce)
+            if let Some(highest_tx) =
+                this.pool().get_highest_consecutive_transaction_by_sender(address, next_nonce)
             {
                 // Return the nonce of the highest consecutive transaction + 1
                 next_nonce = highest_tx.nonce().checked_add(1).ok_or_else(|| {
