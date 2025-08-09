@@ -36,7 +36,7 @@ RUN rustup target add wasm32-unknown-unknown
 RUN cargo chef cook --profile $BUILD_PROFILE --features "$FEATURES" --recipe-path recipe.json
 
 # Build application
-COPY --exclude=.git --exclude=dist . .
+COPY --exclude=dist . .
 RUN cargo build --profile $BUILD_PROFILE --features "$FEATURES" --locked --bin reth
 
 # ARG is not resolved in COPY so we have to hack around it by copying the

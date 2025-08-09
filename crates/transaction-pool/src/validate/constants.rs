@@ -16,4 +16,4 @@ pub const DEFAULT_MAX_TX_INPUT_BYTES: usize = 4 * TX_SLOT_BYTE_SIZE * 8; // 1MB
 pub const MAX_CODE_BYTE_SIZE: usize = fluentbase_types::WASM_MAX_CODE_SIZE; // 2MB
 
 /// Maximum initcode to permit in a creation transaction and create instructions.
-pub const MAX_INIT_CODE_BYTE_SIZE: usize = fluentbase_types::WASM_MAX_CODE_SIZE; // 2MB
+pub const MAX_INIT_CODE_BYTE_SIZE: usize = revm_primitives::eip3860::MAX_INITCODE_SIZE;
