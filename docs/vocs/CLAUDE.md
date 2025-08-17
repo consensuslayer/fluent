@@ -86,7 +86,7 @@ bun run preview
 3. Include usage examples and parameter descriptions
 
 **Adding a new guide:**
-1. Create `.mdx` file in appropriate category
+1. Create `.mdx` file in the appropriate category
 2. Update sidebar with new entry
 3. Include practical examples and next steps
 
