@@ -59,7 +59,7 @@ pub struct RequestPair<T> {
 }
 
 ```
-Every `Ethmessage` has a corresponding rust struct that implements the `Encodable` and `Decodable` traits.
+Every `Ethmessage` has a corresponding Rust struct that implements the `Encodable` and `Decodable` traits.
 These traits are defined as follows:
 
 [Crate: crates/rlp](https://github.com/paradigmxyz/reth/tree/1563506aea09049a85e5cc72c2894f3f7a371581/crates/rlp)
