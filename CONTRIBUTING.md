@@ -49,7 +49,7 @@ elsewhere.
 <!-- If you have reviewed existing documentation and still have questions, or you are having problems, you can get help in the following ways: -->
 
 <!-- -   **Asking in the support Telegram:** The [Foundry Support Telegram][support-tg] is a fast and easy way to ask questions. -->
-<!-- -   **Opening a discussion:** This repository comes with a discussions board where you can also ask for help. Click the "Discussions" tab at the top. -->
+<!-- -   **Opening a discussion:** This repository comes with a discussion board where you can also ask for help. Click the "Discussions" tab at the top. -->
 
 If you have reviewed existing documentation and still have questions, or you are having problems, you can get help by *
 *opening a discussion**. This repository comes with a discussions board where you can also ask for help. Click the "
